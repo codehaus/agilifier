@@ -1,0 +1,148 @@
+<project name="agilifier" default="all">
+
+    <property name="java.src.dir" value="src/java"/>
+    <property name="test.src.dir" value="src/test"/>
+    <property name="config.dir" value="config"/>
+
+    <property name="target.dir" value="build"/>
+    <property name="dist.dir" value="${target.dir}/dist"/>
+
+    <property name="java.classes.dir" value="${target.dir}/classes"/>
+    <property name="test.classes.dir" value="${target.dir}/test-classes"/>
+    <property name="test.results.dir" value="${target.dir}/test-results"/>
+
+    <property name="lib.dir" value="lib"/>
+
+    <path id="cp">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="clean" description="Removes all of the target directory area to prepare for a fresh build">
+        <delete dir="${target.dir}" quiet="true"/>
+    </target>
+
+    <target name="init" depends="determine-version">
+        <mkdir dir="${target.dir}"/>
+        <mkdir dir="${java.classes.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${test.results.dir}"/>
+    </target>
+
+    <target name="compile-java" depends="init">
+        <javac srcdir="${java.src.dir}" destdir="${java.classes.dir}" classpathref="cp" debug="on"/>
+        <copy todir="${java.classes.dir}" overwrite="true">
+            <fileset dir="${java.src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.ftl"/>
+                <include name="**/*.vm"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile-test" depends="jar-files">
+        <javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" debug="on">
+            <classpath>
+                <pathelement location="${dist.jar}"/>
+                <path refid="cp"/>
+            </classpath>
+        </javac>
+        <copy todir="${test.classes.dir}" overwrite="true">
+            <fileset dir="${test.src.dir}">
+                <include name="**/*.html"/>
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="test" depends="jar-files, compile-test">
+        <junit printsummary="on" haltonfailure="true" fork="yes">
+            <classpath>
+                <pathelement location="${dist.jar}"/>
+                <path refid="cp"/>
+                <pathelement location="${test.classes.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <formatter type="xml"/>
+            <batchtest todir="${test.results.dir}">
+                <fileset dir="${test.classes.dir}" includes="**/MicroTests.class"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <!--    <target name="cvsupdate">-->
+    <!--        <cvs command="up -d -P"/>-->
+    <!--    </target>-->
+
+    <!--    <target name="cc-build" depends="cvsupdate, clean, test, build-story-website">-->
+    <!--    </target>-->
+
+    <target name="build-story-website" depends="clean, compile-java, compile-test"
+            description="Generate the user story site">
+        <java classname="com.stuffedgiraffe.agilifier.main.GenerateUserStorySite" fork="true">
+            <classpath>
+                <pathelement location="${dist.jar}"/>
+                <path refid="cp"/>
+            </classpath>
+        </java>
+        <copy file="${config.dir}/acceptance-test-site/overview.css"
+              tofile="${target.dir}/acceptance-test-results/overview.css"/>
+        <copy file="${config.dir}/acceptance-test-site/tests.css"
+              tofile="${target.dir}/acceptance-test-results/tests.css"/>
+    </target>
+
+    <target name="all" depends="clean, jar-files, test, build-story-website, source-zip, release-zip"
+            description="Run the tests and build the story website"/>
+
+    <target name="development-version" unless="release">
+        <property file="version.properties"/>
+        <tstamp>
+            <format property="timestamp" pattern="yyyyMMddHHmm" locale="en" timezone="GMT"/>
+        </tstamp>
+        <property name="version" value="${agilifier.version}-${timestamp}"/>
+    </target>
+
+    <target name="release-version" if="release">
+        <property file="version.properties"/>
+        <property name="version" value="${agilifier.version}"/>
+    </target>
+
+    <target name="determine-version" depends="development-version, release-version">
+        <echo message="Version for build is: ${version}"/>
+    </target>
+
+    <target name="jar-files" depends="compile-java" description="Create jar for distribution">
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${dist.dir}/META-INF"/>
+        <property name="dist.jar" value="${dist.dir}/agilifier-${version}.jar"/>
+        <jar basedir="${java.classes.dir}" destfile="${dist.jar}" includes="**/*"/>
+    </target>
+
+    <target name="release">
+        <property name="release" value="true"/>
+        <antcall target="all"/>
+    </target>
+
+    <target name="source-zip">
+        <zip basedir="${java.classes.dir}" destfile="${dist.dir}/agilifier-${version}-src.zip">
+            <fileset dir=".">
+                <include name="**/*"/>
+                <exclude name="build/**/*"/>
+                <exclude name=".clover/**/*"/>
+                <exclude name="target/**/*"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="release-zip">
+        <zip basedir="${java.classes.dir}" destfile="${dist.dir}/agilifier-${version}.zip">
+            <zipfileset dir="${dist.dir}" prefix="agilifier-${version}">
+                <include name="agilifier-${version}.jar"/>
+            </zipfileset>
+            <zipfileset dir="lib" prefix="agilifier-${version}/lib">
+                <include name="*.jar"/>
+            </zipfileset>
+        </zip>
+    </target>
+
+</project>

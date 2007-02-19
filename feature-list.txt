@@ -1,0 +1,10 @@
+=========================================
+== Features to add to Agilifier
+=========================================
+- More configurability (of paths etc), so that it can be applied to project trees that have different structures
+- Support for multiple releases/modules within the project, so that we can get summaries for multiple teams sharing a codebase
+- Better prettification of FIT output HTML, so that it looks like the rest of the site
+- Build Agilifier with Agilifier, so that we eat our own dog food and notice where the pain is
+- Support for Exactor, so that it can be used beyond FIT
+
+
