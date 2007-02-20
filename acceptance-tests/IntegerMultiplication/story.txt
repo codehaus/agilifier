@@ -1,0 +1,3 @@
+As a calculator user 
+I want to be able to multiply to numbers together
+So that I don't have to perform repeated addition
