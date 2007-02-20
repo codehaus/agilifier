@@ -1,8 +1,0 @@
-# Simple example of a calculator
-# acceptance test.
-
-# command           operand 1       operand 2       expected
-CheckAddition       5               4               9
-CheckMultiplication 2               5               10
-CheckSubtraction    10              3               7
-CheckDivision       9               3               8

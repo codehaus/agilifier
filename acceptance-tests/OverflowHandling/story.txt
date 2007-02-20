@@ -1,3 +1,0 @@
-As a calculator user
-I want to know when an overflow has occured
-So that I do not get incorrect results

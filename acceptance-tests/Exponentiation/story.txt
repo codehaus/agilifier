@@ -1,3 +1,0 @@
-As a calculator user
-I want to raise one integer to the power of another positive integer
-So that I don't have to do repeated multiplication
