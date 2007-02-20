@@ -35,7 +35,7 @@ public class JUnitSuiteBuilderTest extends MockObjectTestCase {
 
         runner = (Runner) runnerMock.proxy();
 
-        FileContext fileContext = new FileContext("acceptance-tests", "target/acceptance-test-results");
+        FileContext fileContext = new FileContext("acceptance-tests", "build/acceptance-test-results");
         module = new Module("MyModule", fileContext);
         suite = new UserStorySuite("SuiteOne", module);
         acceptanceTest = new AcceptanceTest(testFile, fileContext.getResultsFile(testFile), runner);
@@ -84,11 +84,11 @@ public class JUnitSuiteBuilderTest extends MockObjectTestCase {
     }
 
     private void throwExceptionThatOccurred(TestResult testResult) throws Throwable {
-        while (testResult.failures().hasMoreElements()) {
+        if (testResult.failures().hasMoreElements()) {
             TestFailure testFailure = (TestFailure) testResult.failures().nextElement();
             throw testFailure.thrownException();
         }
-        while (testResult.errors().hasMoreElements()) {
+        if (testResult.errors().hasMoreElements()) {
             TestFailure testFailure = (TestFailure) testResult.failures().nextElement();
             throw testFailure.thrownException();
         }

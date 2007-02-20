@@ -4,12 +4,12 @@
     <property name="test.src.dir" value="src/test"/>
     <property name="config.dir" value="config"/>
 
-    <property name="target.dir" value="build"/>
-    <property name="dist.dir" value="${target.dir}/dist"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="${build.dir}/dist"/>
 
-    <property name="java.classes.dir" value="${target.dir}/classes"/>
-    <property name="test.classes.dir" value="${target.dir}/test-classes"/>
-    <property name="test.results.dir" value="${target.dir}/test-results"/>
+    <property name="java.classes.dir" value="${build.dir}/classes"/>
+    <property name="test.classes.dir" value="${build.dir}/test-classes"/>
+    <property name="test.results.dir" value="${build.dir}/test-results"/>
 
     <property name="lib.dir" value="lib"/>
 
@@ -17,12 +17,12 @@
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
-    <target name="clean" description="Removes all of the target directory area to prepare for a fresh build">
-        <delete dir="${target.dir}" quiet="true"/>
+    <target name="clean" description="Removes all of the build directory area to prepare for a fresh build">
+        <delete dir="${build.dir}" quiet="true"/>
     </target>
 
     <target name="init" depends="determine-version">
-        <mkdir dir="${target.dir}"/>
+        <mkdir dir="${build.dir}"/>
         <mkdir dir="${java.classes.dir}"/>
         <mkdir dir="${test.classes.dir}"/>
         <mkdir dir="${test.results.dir}"/>
@@ -70,29 +70,20 @@
         </junit>
     </target>
 
-    <!--    <target name="cvsupdate">-->
-    <!--        <cvs command="up -d -P"/>-->
-    <!--    </target>-->
-
-    <!--    <target name="cc-build" depends="cvsupdate, clean, test, build-story-website">-->
-    <!--    </target>-->
-
     <target name="build-story-website" depends="clean, compile-java, compile-test"
             description="Generate the user story site">
-        <java classname="com.stuffedgiraffe.agilifier.main.GenerateUserStorySite" fork="true">
+        <java classname="com.stuffedgiraffe.agilifier.main.AllAcceptanceTests" fork="true">
             <classpath>
                 <pathelement location="${dist.jar}"/>
                 <path refid="cp"/>
+                <pathelement location="${test.classes.dir}"/>
             </classpath>
         </java>
         <copy file="${config.dir}/acceptance-test-site/overview.css"
-              tofile="${target.dir}/acceptance-test-results/overview.css"/>
+              tofile="${build.dir}/acceptance-test-results/overview.css"/>
         <copy file="${config.dir}/acceptance-test-site/tests.css"
-              tofile="${target.dir}/acceptance-test-results/tests.css"/>
+              tofile="${build.dir}/acceptance-test-results/tests.css"/>
     </target>
-
-    <target name="all" depends="clean, jar-files, test, build-story-website, source-zip, release-zip"
-            description="Run the tests and build the story website"/>
 
     <target name="development-version" unless="release">
         <property file="version.properties"/>
@@ -129,7 +120,6 @@
                 <include name="**/*"/>
                 <exclude name="build/**/*"/>
                 <exclude name=".clover/**/*"/>
-                <exclude name="target/**/*"/>
             </fileset>
         </zip>
     </target>
@@ -144,5 +134,30 @@
             </zipfileset>
         </zip>
     </target>
+
+    <target name="archive-source">
+        <tar longfile="gnu" destfile="../agilifier-source.tgz" compression="gzip">
+            <tarfileset dir="." mode="755" defaultexcludes="no">
+                <include name="**/*"/>
+                <exclude name=".clover/**/*"/>
+                <exclude name="build/**/*"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="unpack-source">
+        <delete includeemptydirs="yes">
+            <fileset dir="." defaultexcludes="no">
+                <include name="**/*"/>
+                <exclude name="build.xml"/>
+            </fileset>
+        </delete>
+        <untar src="../agilifier-source.tgz" overwrite="true" dest="." compression="gzip"/>
+    </target>
+    
+    <target name="all" depends="clean, jar-files, test, build-story-website, source-zip, release-zip"
+            description="Run the tests and build the story website"/>
+
+    <target name="continuous-integration" depends="all" description="Run the continuous integration build"/>
 
 </project>
