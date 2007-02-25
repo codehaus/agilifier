@@ -1,76 +1,103 @@
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
-<META NAME="Generator" CONTENT="Microsoft FrontPage 4.0">
-<META NAME="AUTDOR" CONTENT="William Jones">
-<META NAME="CREATED" CONTENT="20040610;10351800">
-<META NAME="CHANGEDBY" CONTENT="William Jones">
-<META NAME="CHANGED" CONTENT="20040625;8004169">
-<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
-</HEAD>
-<BODY TEXT="#000000" LINK="#0000ff" VLINK="#800080">
+<html>
+<head>
+    <title>Advanced Search Based On Current State Transitions</title>
+    <link rel="stylesheet" href="../tests.css">
+</head>
 
-<h1><b><font size="6">Overflow Occurs When One Of The Registers Is Too Big</font></b> </h1>
-<p>Check that we get the result &quot;OVERFLOW&quot; when we blow the size.</p>
-<TABLE BORDER="1" CELLSPACING=1 BORDERCOLOR="#000000" CELLPADDING=4 WIDTH=747>
-<TR><TD VALIGN="MIDDLE" COLSPAN=4>
-<P><i>com.stuffedgiraffe.agilifier.calculator.CalculatorFixture</i></TD>
-</TR>
-<TR><TD WIDTH="25%" VALIGN="MIDDLE">
-<P><b>value1</b></TD>
-<TD WIDTH="26%" VALIGN="MIDDLE">
-<b>operator</b> </TD>
-<TD WIDTH="28%" VALIGN="MIDDLE">
-<B><P>value2</B></TD>
-<TD WIDTH="21%" VALIGN="MIDDLE">
-<B><P>result()</B> </TD>
-</TR>
-<TR><TD WIDTH="25%" VALIGN="MIDDLE">
-<P>2147483647</TD>
-<TD WIDTH="26%" VALIGN="MIDDLE">
-+</TD>
-<TD WIDTH="28%" VALIGN="MIDDLE">
--1</TD>
-<TD WIDTH="21%" VALIGN="MIDDLE">
-OVERFLOW</TD>
-</TR>
-<TR><TD WIDTH="25%" VALIGN="MIDDLE">
-2147483646</TD>
-<TD WIDTH="26%" VALIGN="MIDDLE">
-+</TD>
-<TD WIDTH="28%" VALIGN="MIDDLE">
-0</TD>
-<TD WIDTH="21%" VALIGN="MIDDLE">
-2147483646</TD>
-</TR>
-<TR><TD WIDTH="25%" VALIGN="MIDDLE">
--2147483648</TD>
-<TD WIDTH="26%" VALIGN="MIDDLE">
-+</TD>
-<TD WIDTH="28%" VALIGN="MIDDLE">
-1</TD>
-<TD WIDTH="21%" VALIGN="MIDDLE">
-OVERFLOW</TD>
-</TR>
-<TR><TD WIDTH="25%" VALIGN="MIDDLE">
-2147483647</TD>
-<TD WIDTH="26%" VALIGN="MIDDLE">
-+</TD>
-<TD WIDTH="28%" VALIGN="MIDDLE">
-0</TD>
-<TD WIDTH="21%" VALIGN="MIDDLE">
-2147483647</TD>
-</TR>
-</TABLE>
+<body>
 
-<br>
+<div class="fitTest">
+    <h1>Overflow Occurs When One Of The Registers Is Too Big</h1>
+    <table>
+        <tr class="fixtureTitleRow">
+            <td colspan="4">
+                com.stuffedgiraffe.agilifier.calculator.CalculatorFixture
+            </td>
+        </tr>
+        <tr>
+            <td>d
 
-<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" CELLPADDING=4 WIDTH=140>
-<TR><TD VALIGN="MIDDLE">
-<I><P>fit.Summary</I></TD>
-</TR>
-</TABLE>
+                value1
+            </td>
+            <td>
+                operator
+            </td>
+            <td>
+                value2
+            </td>
+            <td>
+                result()
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2147483647
+            </td>
+            <td>
+                +
+            </td>
+            <td>
+                -1
+            </td>
+            <td>
+                OVERFLOW
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2147483646
+            </td>
+            <td>
+                +
+            </td>
+            <td>
+                0
+            </td>
+            <td>
+                2147483646
+            </td>
+        </tr>
+        <tr>
+            <td>
+                -2147483648
+            </td>
+            <td>
+                +
+            </td>
+            <td>
+                1
+            </td>
+            <td>
+                OVERFLOW
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2147483647
+            </td>
+            <td>
+                +
+            </td>
+            <td>
+                0
+            </td>
+            <td>
+                2147483647
+            </td>
+        </tr>
+    </table>
 
-<P>&nbsp;</P>
-<P>&nbsp;</P></BODY>
-</HTML>
+    <br>
+
+    <table>
+        <tr>
+            <td>
+                fit.Summary
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

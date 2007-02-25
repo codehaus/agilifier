@@ -129,7 +129,7 @@
             <zipfileset dir="${dist.dir}" prefix="agilifier-${version}">
                 <include name="agilifier-${version}.jar"/>
             </zipfileset>
-            <zipfileset dir="lib" prefix="agilifier-${version}/lib">
+            <zipfileset dir="lib" prefix="agilifier-${version}/lib/shipped">
                 <include name="*.jar"/>
             </zipfileset>
         </zip>
@@ -154,8 +154,8 @@
         </delete>
         <untar src="../agilifier-source.tgz" overwrite="true" dest="." compression="gzip"/>
     </target>
-    
-    <target name="all" depends="clean, jar-files, test, build-story-website, source-zip, release-zip"
+
+    <target name="all" depends="clean, init, jar-files, test, build-story-website, source-zip, release-zip"
             description="Run the tests and build the story website"/>
 
     <target name="continuous-integration" depends="all" description="Run the continuous integration build"/>
