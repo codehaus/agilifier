@@ -1,7 +1,7 @@
 package com.stuffedgiraffe.agilifier.model;
 
 import com.stuffedgiraffe.agilifier.runner.Runner;
-import com.stuffedgiraffe.agilifier.util.Agilifier;
+import com.stuffedgiraffe.agilifier.util.CamelUtils;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ public class AcceptanceTest {
     }
 
     public String getDescription() {
-        return Agilifier.uncamel(name);
+        return CamelUtils.uncamel(name);
     }
 
     public boolean getPassed() {
@@ -45,16 +45,29 @@ public class AcceptanceTest {
         return resultFile;
     }
 
+    @SuppressWarnings({"RedundantIfStatement"})
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AcceptanceTest)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AcceptanceTest)) {
+            return false;
+        }
 
         final AcceptanceTest acceptanceTest = (AcceptanceTest) o;
 
-        if (passed != acceptanceTest.passed) return false;
-        if (name != null ? !name.equals(acceptanceTest.name) : acceptanceTest.name != null) return false;
-        if (resultFile != null ? !resultFile.equals(acceptanceTest.resultFile) : acceptanceTest.resultFile != null) return false;
-        if (testFile != null ? !testFile.equals(acceptanceTest.testFile) : acceptanceTest.testFile != null) return false;
+        if (passed != acceptanceTest.passed) {
+            return false;
+        }
+        if (name != null ? !name.equals(acceptanceTest.name) : acceptanceTest.name != null) {
+            return false;
+        }
+        if (resultFile != null ? !resultFile.equals(acceptanceTest.resultFile) : acceptanceTest.resultFile != null) {
+            return false;
+        }
+        if (testFile != null ? !testFile.equals(acceptanceTest.testFile) : acceptanceTest.testFile != null) {
+            return false;
+        }
 
         return true;
     }

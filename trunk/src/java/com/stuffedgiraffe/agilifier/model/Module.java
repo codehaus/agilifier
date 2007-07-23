@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Module {
-    private List suites = new LinkedList();
+    private List<UserStorySuite> suites = new LinkedList<UserStorySuite>();
     private String name;
     private FileContext fileContext;
 

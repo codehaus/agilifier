@@ -45,7 +45,7 @@ public class ExactorRunnerBackEnd {
     }
 
 
-    private List results;
+    private List<CommandResult> results;
     private Throwable throwable;
 
     private void executeTestCase(File testFile, File resultsFile) throws Throwable {
@@ -68,14 +68,14 @@ public class ExactorRunnerBackEnd {
             }
 
             public void scriptStarted(Script s) {
-                results = new LinkedList();
+                results = new LinkedList<CommandResult>();
                 executed = 0;
                 failed = 0;
             }
 
             public void scriptEnded(Script s) {
-                for (int i = 0; i < results.size(); i++) {
-                    CommandResult commandResult = (CommandResult) results.get(i);
+                for (Object result : results) {
+                    CommandResult commandResult = (CommandResult) result;
                     int length = commandResult.getCommand().getParameters().length;
                     if (length > maxParameters) {
                         maxParameters = length;
@@ -83,7 +83,7 @@ public class ExactorRunnerBackEnd {
 
                 }
 
-                Map data = new HashMap();
+                Map<String, Object> data = new HashMap<String, Object>();
                 data.put("results", results);
                 data.put("acceptanceTestName", test.getDescription());
                 data.put("executed", String.valueOf(executed));
