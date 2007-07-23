@@ -10,7 +10,6 @@ public class DeafTestListener implements TestListener {
     }
 
     public void addFailure(Test test, AssertionFailedError assertionFailedError) {
-
     }
 
     public void endTest(Test test) {

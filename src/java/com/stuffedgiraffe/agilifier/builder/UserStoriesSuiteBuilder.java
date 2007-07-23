@@ -10,7 +10,10 @@ import com.stuffedgiraffe.agilifier.runner.FitRunner;
 import com.stuffedgiraffe.agilifier.runner.Runner;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class UserStoriesSuiteBuilder {
     private static final FileFilter DIRECTORY_FILE_FILTER = new FileFilter() {
@@ -45,8 +48,8 @@ public class UserStoriesSuiteBuilder {
     public UserStorySuite buildAllUserStoriesSuite(FileContext fileContext, Module module) {
         UserStorySuite userStorySuite = new UserStorySuite("All User Stories", module);
         File[] storyDirectories = fileContext.getTestRootDir().listFiles(DIRECTORY_FILE_FILTER);
-        for (int i = 0; i < storyDirectories.length; i++) {
-            String storyName = storyDirectories[i].getName();
+        for (File storyDirectory : storyDirectories) {
+            String storyName = storyDirectory.getName();
             UserStory userStory = buildUserStory(storyName, fileContext);
             userStorySuite.addStory(userStory);
         }
@@ -55,14 +58,12 @@ public class UserStoriesSuiteBuilder {
 
     public UserStorySuite buildOtherUserStoriesSuite(UserStorySuite[] userStorySuites, FileContext fileContext, Module module) {
         UserStorySuite allStoriesSuite = buildAllUserStoriesSuite(fileContext, module);
-        Set allStories = new HashSet(allStoriesSuite.getStories());
-        for (int i = 0; i < userStorySuites.length; i++) {
-            UserStorySuite userStorySuite = userStorySuites[i];
+        Set<UserStory> allStories = new HashSet<UserStory>(allStoriesSuite.getStories());
+        for (UserStorySuite userStorySuite : userStorySuites) {
             allStories.removeAll(userStorySuite.getStories());
         }
         UserStorySuite otherStoriesSuite = new UserStorySuite("Future User Stories", module);
-        for (Iterator iterator = allStories.iterator(); iterator.hasNext();) {
-            UserStory userStory = (UserStory) iterator.next();
+        for (UserStory userStory : allStories) {
             otherStoriesSuite.addStory(userStory);
         }
         return otherStoriesSuite;
@@ -72,14 +73,12 @@ public class UserStoriesSuiteBuilder {
         UserStory userStory = new UserStory(storyName);
         loadStoryText(userStory, fileContext);
         File storyDir = new File(fileContext.getTestRootDir() + File.separator + storyName);
-        for (int i = 0; i < runners.length; i++) {
-            Runner runner = runners[i];
+        for (Runner runner : runners) {
             File[] testFiles = storyDir.listFiles(runner.getFileFilter());
             if (testFiles == null) {
                 throw new IllegalStateException("Unable to find tests for story: " + storyName);
             }
-            for (int j = 0; j < testFiles.length; j++) {
-                File testFile = testFiles[j];
+            for (File testFile : testFiles) {
                 AcceptanceTest acceptanceTest = new AcceptanceTest(testFile, fileContext.getResultsFile(testFile), runner);
                 userStory.addTest(acceptanceTest);
             }
@@ -88,7 +87,7 @@ public class UserStoriesSuiteBuilder {
     }
 
     private static void loadStoryText(UserStory userStory, FileContext fileContext) {
-        List lines = new LinkedList();
+        List<String> lines = new LinkedList<String>();
         File storyFile = fileContext.getTestFile(userStory.getName() + File.separator + "story.txt");
         BufferedReader reader = null;
         try {
@@ -102,7 +101,7 @@ public class UserStoriesSuiteBuilder {
             // If the file is not found then just return an empty list
             lines.add("<< No Story Details >>");
         } catch (IOException e) {
-            lines.add(e);
+            lines.add(e.getMessage());
         } finally {
             if (reader != null) {
                 try {

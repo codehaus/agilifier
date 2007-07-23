@@ -6,48 +6,6 @@ import java.util.Properties;
 
 public class Agilifier {
 
-    public static String uncamel(String name) {
-        StringBuffer b = new StringBuffer();
-        char[] chars = name.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char c = chars[i];
-            if (Character.isUpperCase(c) && (nextCharacterIsNotUpperCase(chars, i) || previousCharacterIsNotUpperCase(chars, i)))
-            {
-                b.append(" ");
-            }
-            if (Character.isDigit(c) && previousCharacterIsNotDigit(chars, i)) {
-                b.append(" ");
-            }
-            b.append(c);
-        }
-        String result = b.toString();
-        return result.trim();
-    }
-
-    private static boolean previousCharacterIsNotDigit(char[] chars, int i) {
-        i--;
-        if (i >= chars.length) {
-            return true;
-        }
-        return !Character.isDigit(chars[i]);
-    }
-
-    private static boolean nextCharacterIsNotUpperCase(char[] chars, int i) {
-        i++;
-        if (i >= chars.length) {
-            return true;
-        }
-        return !Character.isUpperCase(chars[i]);
-    }
-
-    private static boolean previousCharacterIsNotUpperCase(char[] chars, int i) {
-        i--;
-        if (i < 0) {
-            return true;
-        }
-        return !Character.isUpperCase(chars[i]);
-    }
-
 
     private static boolean treatExistingResultFileAsSuccess = false;
 

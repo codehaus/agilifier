@@ -1,16 +1,15 @@
 package com.stuffedgiraffe.agilifier.model;
 
-import com.stuffedgiraffe.agilifier.util.Agilifier;
+import com.stuffedgiraffe.agilifier.util.CamelUtils;
 import com.stuffedgiraffe.agilifier.util.ListOrderedMap;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 public class UserStorySuite {
     private String name;
     private Module module;
-    private Map userStories = new ListOrderedMap();
+    private Map<String, UserStory> userStories = new ListOrderedMap<String, UserStory>();
 
     public UserStorySuite(String suiteName, Module module) {
         this.name = suiteName;
@@ -26,21 +25,21 @@ public class UserStorySuite {
     }
 
     public String getDescription() {
-        return Agilifier.uncamel(name);
+        return CamelUtils.uncamel(name);
     }
 
     public void addStory(UserStory userStory) {
         userStories.put(userStory.getName(), userStory);
     }
 
-    public Collection getStories() {
+    public Collection<UserStory> getStories() {
         return userStories.values();
     }
 
     public int getPassedCount() {
         int passed = 0;
-        for (Iterator iterator = getStories().iterator(); iterator.hasNext();) {
-            UserStory userStorySummary = (UserStory) iterator.next();
+        for (Object o : getStories()) {
+            UserStory userStorySummary = (UserStory) o;
             passed += userStorySummary.getPassedCount();
         }
         return passed;
@@ -48,8 +47,8 @@ public class UserStorySuite {
 
     public int getFailedCount() {
         int failed = 0;
-        for (Iterator iterator = getStories().iterator(); iterator.hasNext();) {
-            UserStory userStorySummary = (UserStory) iterator.next();
+        for (Object o : getStories()) {
+            UserStory userStorySummary = (UserStory) o;
             failed += userStorySummary.getFailedCount();
         }
         return failed;

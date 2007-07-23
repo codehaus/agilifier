@@ -1,11 +1,15 @@
 package com.stuffedgiraffe.agilifier.model;
 
-import com.stuffedgiraffe.agilifier.util.Agilifier;
+import com.stuffedgiraffe.agilifier.util.CamelUtils;
 
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserStory {
-    private Map tests = new HashMap();
+    private Map<File, AcceptanceTest> tests = new HashMap<File, AcceptanceTest>();
     private String name;
     private List storyText;
 
@@ -18,7 +22,7 @@ public class UserStory {
     }
 
     public String getDescription() {
-        return Agilifier.uncamel(name);
+        return CamelUtils.uncamel(name);
     }
 
     public List getStoryText() {
@@ -64,8 +68,8 @@ public class UserStory {
 
     private int countTestsWithResult(boolean passed) {
         int count = 0;
-        for (Iterator iterator = tests.values().iterator(); iterator.hasNext();) {
-            AcceptanceTest result = (AcceptanceTest) iterator.next();
+        for (Object o : tests.values()) {
+            AcceptanceTest result = (AcceptanceTest) o;
             if (result.getPassed() == passed) {
                 count++;
             }
@@ -73,6 +77,7 @@ public class UserStory {
         return count;
     }
 
+    @SuppressWarnings({"RedundantIfStatement"})
     public boolean equals(Object o) {
         if (this == o) {
             return true;

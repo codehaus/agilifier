@@ -44,12 +44,10 @@ public class GenerateUserStorySite {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(fileContext.getTestRootDir());
         String[] excludedFiles = new String[]{"**/story.txt", "**/*.suite", "**/*.html", "**/*.act", "**/.svn/**/*", "**/CVS/**/*"};
-//        scanner.setIncludes(new String[]{"**/*"});
         scanner.setExcludes(excludedFiles);
         scanner.scan();
         String[] files = scanner.getIncludedFiles();
-        for (int i = 0; i < files.length; i++) {
-            String filename = files[i];
+        for (String filename : files) {
             copyFileToResultsArea(fileContext, filename);
         }
     }

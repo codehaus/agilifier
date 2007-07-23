@@ -6,29 +6,27 @@ import com.stuffedgiraffe.agilifier.model.AcceptanceTest;
 import com.stuffedgiraffe.agilifier.model.Module;
 import com.stuffedgiraffe.agilifier.model.UserStory;
 import com.stuffedgiraffe.agilifier.model.UserStorySuite;
-import com.stuffedgiraffe.agilifier.util.Agilifier;
+import com.stuffedgiraffe.agilifier.util.CamelUtils;
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AcceptanceTestFileStructureTest extends TestCase {
-    private List failures = new LinkedList();
+    private List<File> failures = new ArrayList<File>();
 
     public void testTestNameAppearsInTestFileCorrectly() throws Exception {
         FileContext fileContext = FileContext.createFromPropertiesFile();
         UserStoriesSuiteBuilder factory = new UserStoriesSuiteBuilder();
         Module module = new Module("MyModule", fileContext);
         UserStorySuite userStorySuite = factory.buildAllUserStoriesSuite(fileContext, module);
-        for (Iterator i1 = userStorySuite.getStories().iterator(); i1.hasNext();) {
-            UserStory userStory = (UserStory) i1.next();
-            for (Iterator i2 = userStory.getAllTests().iterator(); i2.hasNext();) {
-                AcceptanceTest test = (AcceptanceTest) i2.next();
+        for (UserStory userStory1 : userStorySuite.getStories()) {
+            for (Object o : userStory1.getAllTests()) {
+                AcceptanceTest test = (AcceptanceTest) o;
                 File testFile = test.getTestFile();
                 checkHeadingInFileIsCorrect(testFile);
             }
@@ -40,8 +38,8 @@ public class AcceptanceTestFileStructureTest extends TestCase {
 
     private void failThisTest() {
         StringBuffer stringBuffer = new StringBuffer("Could not find name in test files (" + failures.size() + "): \n");
-        for (int i = 0; i < failures.size(); i++) {
-            File file = (File) failures.get(i);
+        for (Object failure : failures) {
+            File file = (File) failure;
             stringBuffer.append("    - ").append(file).append("\n");
         }
         fail(stringBuffer.toString());
@@ -58,7 +56,7 @@ public class AcceptanceTestFileStructureTest extends TestCase {
             return;
         }
         String testName = filename.substring(0, filename.indexOf(".html"));
-        testName = Agilifier.uncamel(testName);
+        testName = CamelUtils.uncamel(testName);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
         boolean found = false;
