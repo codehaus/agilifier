@@ -74,8 +74,7 @@ public class ExactorRunnerBackEnd {
             }
 
             public void scriptEnded(Script s) {
-                for (Object result : results) {
-                    CommandResult commandResult = (CommandResult) result;
+                for (CommandResult commandResult : results) {
                     int length = commandResult.getCommand().getParameters().length;
                     if (length > maxParameters) {
                         maxParameters = length;

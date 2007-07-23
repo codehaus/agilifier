@@ -11,7 +11,7 @@ import java.util.Map;
 public class UserStory {
     private Map<File, AcceptanceTest> tests = new HashMap<File, AcceptanceTest>();
     private String name;
-    private List storyText;
+    private List<String> storyText;
 
     public UserStory(String userStory) {
         this.name = userStory;
@@ -29,7 +29,7 @@ public class UserStory {
         return storyText;
     }
 
-    public void setStoryText(List storyText) {
+    public void setStoryText(List<String> storyText) {
         this.storyText = storyText;
     }
 
@@ -37,7 +37,7 @@ public class UserStory {
         tests.put(test.getTestFile(), test);
     }
 
-    public Collection getAllTests() {
+    public Collection<AcceptanceTest> getAllTests() {
         return tests.values();
     }
 
@@ -68,8 +68,7 @@ public class UserStory {
 
     private int countTestsWithResult(boolean passed) {
         int count = 0;
-        for (Object o : tests.values()) {
-            AcceptanceTest result = (AcceptanceTest) o;
+        for (AcceptanceTest result : tests.values()) {
             if (result.getPassed() == passed) {
                 count++;
             }
