@@ -11,7 +11,6 @@ import junit.framework.TestListener;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class JUnitSuiteBuilder {
@@ -30,9 +29,8 @@ public class JUnitSuiteBuilder {
                 publisher.generateModuleSummary(module);
             }
         };
-        List userStorySuites = module.getUserStorySuites();
-        for (int i = 0; i < userStorySuites.size(); i++) {
-            UserStorySuite userStorySuite = (UserStorySuite) userStorySuites.get(i);
+        List<UserStorySuite> userStorySuites = module.getUserStorySuites();
+        for (UserStorySuite userStorySuite : userStorySuites) {
             moduleSuite.addTest(buildJUnitSuite(userStorySuite, module.getFileContext()));
         }
         return moduleSuite;
@@ -45,8 +43,7 @@ public class JUnitSuiteBuilder {
                 publisher.generateUserStorySuiteSummary(userStorySuite, fileContext);
             }
         };
-        for (Iterator iterator = userStorySuite.getStories().iterator(); iterator.hasNext();) {
-            UserStory userStory = (UserStory) iterator.next();
+        for (UserStory userStory : userStorySuite.getStories()) {
             suite.addTest(buildJUnitSuite(userStory, fileContext));
         }
         int storyCount = userStorySuite.getStories().size();
@@ -61,9 +58,8 @@ public class JUnitSuiteBuilder {
                 publisher.generateUserStorySummary(userStory, fileContext);
             }
         };
-        for (Iterator iterator = userStory.getAllTests().iterator(); iterator.hasNext();) {
-            AcceptanceTest test = (AcceptanceTest) iterator.next();
-            JUnitAcceptanceTest junitTest = new JUnitAcceptanceTest(test, testListener);
+        for (AcceptanceTest acceptanceTest : userStory.getAllTests()) {
+            JUnitAcceptanceTest junitTest = new JUnitAcceptanceTest(acceptanceTest, testListener);
             suite.addTest(junitTest);
         }
         int testCount = userStory.getAllTests().size();

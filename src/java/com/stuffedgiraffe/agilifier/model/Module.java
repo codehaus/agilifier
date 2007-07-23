@@ -23,7 +23,7 @@ public class Module {
         return name;
     }
 
-    public List getUserStorySuites() {
+    public List<UserStorySuite> getUserStorySuites() {
         return suites;
     }
 

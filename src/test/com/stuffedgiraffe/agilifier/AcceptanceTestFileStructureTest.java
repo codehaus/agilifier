@@ -24,10 +24,9 @@ public class AcceptanceTestFileStructureTest extends TestCase {
         UserStoriesSuiteBuilder factory = new UserStoriesSuiteBuilder();
         Module module = new Module("MyModule", fileContext);
         UserStorySuite userStorySuite = factory.buildAllUserStoriesSuite(fileContext, module);
-        for (UserStory userStory1 : userStorySuite.getStories()) {
-            for (Object o : userStory1.getAllTests()) {
-                AcceptanceTest test = (AcceptanceTest) o;
-                File testFile = test.getTestFile();
+        for (UserStory userStory : userStorySuite.getStories()) {
+            for (AcceptanceTest acceptanceTest : userStory.getAllTests()) {
+                File testFile = acceptanceTest.getTestFile();
                 checkHeadingInFileIsCorrect(testFile);
             }
         }
@@ -38,9 +37,8 @@ public class AcceptanceTestFileStructureTest extends TestCase {
 
     private void failThisTest() {
         StringBuffer stringBuffer = new StringBuffer("Could not find name in test files (" + failures.size() + "): \n");
-        for (Object failure : failures) {
-            File file = (File) failure;
-            stringBuffer.append("    - ").append(file).append("\n");
+        for (File failure : failures) {
+            stringBuffer.append("    - ").append(failure).append("\n");
         }
         fail(stringBuffer.toString());
     }

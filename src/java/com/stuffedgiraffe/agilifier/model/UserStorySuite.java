@@ -38,8 +38,7 @@ public class UserStorySuite {
 
     public int getPassedCount() {
         int passed = 0;
-        for (Object o : getStories()) {
-            UserStory userStorySummary = (UserStory) o;
+        for (UserStory userStorySummary : getStories()) {
             passed += userStorySummary.getPassedCount();
         }
         return passed;
@@ -47,8 +46,7 @@ public class UserStorySuite {
 
     public int getFailedCount() {
         int failed = 0;
-        for (Object o : getStories()) {
-            UserStory userStorySummary = (UserStory) o;
+        for (UserStory userStorySummary : getStories()) {
             failed += userStorySummary.getFailedCount();
         }
         return failed;
