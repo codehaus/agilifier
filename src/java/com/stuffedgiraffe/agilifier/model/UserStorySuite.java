@@ -6,17 +6,18 @@ import com.stuffedgiraffe.agilifier.util.ListOrderedMap;
 import java.util.Collection;
 import java.util.Map;
 
-public class UserStorySuite {
+public class UserStorySuite implements AcceptanceTestContainer {
     private String name;
-    private Module module;
-    private Map<String, UserStory> userStories = new ListOrderedMap<String, UserStory>();
+    private Map<String, AcceptanceTestOrAcceptanceTestContainer> userStories = new ListOrderedMap<String, AcceptanceTestOrAcceptanceTestContainer>();
+    private AcceptanceTestContainer module;
+    private String text = "";
 
-    public UserStorySuite(String suiteName, Module module) {
+    public UserStorySuite(String suiteName, AcceptanceTestContainer module) {
         this.name = suiteName;
         this.module = module;
     }
 
-    public Module getModule() {
+    public AcceptanceTestContainer getParent() {
         return module;
     }
 
@@ -24,21 +25,26 @@ public class UserStorySuite {
         return name;
     }
 
+    public boolean isTest() {
+        return false;
+    }
+
     public String getDescription() {
         return CamelUtils.uncamel(name);
     }
 
-    public void addStory(UserStory userStory) {
+    public void addChild(AcceptanceTestOrAcceptanceTestContainer userStory) {
         userStories.put(userStory.getName(), userStory);
     }
 
-    public Collection<UserStory> getStories() {
+    public Collection<AcceptanceTestOrAcceptanceTestContainer> getChildren() {
         return userStories.values();
     }
 
     public int getPassedCount() {
         int passed = 0;
-        for (UserStory userStorySummary : getStories()) {
+        for (AcceptanceTestOrAcceptanceTestContainer container : getChildren()) {
+            AcceptanceTestContainer userStorySummary = (AcceptanceTestContainer) container;
             passed += userStorySummary.getPassedCount();
         }
         return passed;
@@ -46,7 +52,8 @@ public class UserStorySuite {
 
     public int getFailedCount() {
         int failed = 0;
-        for (UserStory userStorySummary : getStories()) {
+        for (AcceptanceTestOrAcceptanceTestContainer container : getChildren()) {
+            AcceptanceTestContainer userStorySummary = (AcceptanceTestContainer) container;
             failed += userStorySummary.getFailedCount();
         }
         return failed;
@@ -70,5 +77,21 @@ public class UserStorySuite {
         return 100 * passed / (passed + failed);
     }
 
+    public String getPath() {
+        String path = getParent().getPath() + "/" + getName();
+        return path;
+    }
 
+    public String getPathToRoot() {
+        String path = getParent().getPathToRoot() + "/..";
+        return path;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

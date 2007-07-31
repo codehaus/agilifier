@@ -25,7 +25,7 @@ public class HtmlPublisherTest extends MockObjectTestCase {
         userStory = new UserStory("MyUserStory");
         module = new Module("MyModule", fileContext);
         userStorySuite = new UserStorySuite("MyTestSuite", module);
-        userStorySuite.addStory(userStory);
+        userStorySuite.addChild(userStory);
         module.addUserStorySuite(userStorySuite);
         fileGeneratorMock = new Mock(FileGenerator.class);
         htmlPublisher = new HtmlPublisher((FileGenerator) fileGeneratorMock.proxy());
@@ -33,7 +33,7 @@ public class HtmlPublisherTest extends MockObjectTestCase {
 
     public void testCallsFileGeneratorToGenerateUserStorySuiteSummary() throws Exception {
         File outputFile = new File("resultsDir/summaryMyTestSuite.html");
-        Map data = MapBuilder.make("suite", userStorySuite);
+        Map<String, Object> data = MapBuilder.make("suite", userStorySuite);
         fileGeneratorMock.expects(once()).method("generateFile").with(eq("UserStorySuiteSummary.vm"), eq(data), eq(outputFile));
 
         htmlPublisher.generateUserStorySuiteSummary(userStorySuite, fileContext);
@@ -41,7 +41,7 @@ public class HtmlPublisherTest extends MockObjectTestCase {
 
     public void testCallsFileGeneratorToGenerateModuleSummary() throws Exception {
         File outputFile = new File("resultsDir/index.html");
-        Map data = MapBuilder.make("module", module);
+        Map<String, Object> data = MapBuilder.make("module", module);
         fileGeneratorMock.expects(once()).method("generateFile").with(eq("ModuleSummary.vm"), eq(data), eq(outputFile));
 
         htmlPublisher.generateModuleSummary(module);
@@ -49,7 +49,7 @@ public class HtmlPublisherTest extends MockObjectTestCase {
 
     public void testCallsFileGeneratorToGenerateUserStorySummary() throws Exception {
         File outputFile = new File("resultsDir/MyUserStory/summary.html");
-        Map data = MapBuilder.make("userStory", userStory);
+        Map<String, Object> data = MapBuilder.make("userStory", userStory);
         fileGeneratorMock.expects(once()).method("generateFile").with(eq("UserStorySummary.vm"), eq(data), eq(outputFile));
 
         htmlPublisher.generateUserStorySummary(userStory, fileContext);

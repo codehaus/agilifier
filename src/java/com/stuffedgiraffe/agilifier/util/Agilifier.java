@@ -2,11 +2,11 @@ package com.stuffedgiraffe.agilifier.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Properties;
 
 public class Agilifier {
-
-
     private static boolean treatExistingResultFileAsSuccess = false;
 
     public static boolean treatExistingResultFileAsSuccess() {
@@ -38,4 +38,11 @@ public class Agilifier {
     public static String getModuleName() throws IOException {
         return getProperty("agilifier.projectName", "Project");
     }
+
+    public static String getStackTrace(Throwable exception) {
+        StringWriter stringWriter = new StringWriter();
+        exception.printStackTrace(new PrintWriter(stringWriter));
+        return stringWriter.toString();
+    }
+
 }

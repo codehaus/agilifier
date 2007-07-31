@@ -1,6 +1,7 @@
 package com.stuffedgiraffe.agilifier.publisher;
 
 import com.stuffedgiraffe.agilifier.main.FileContext;
+import com.stuffedgiraffe.agilifier.model.AcceptanceTestContainer;
 import com.stuffedgiraffe.agilifier.model.Module;
 import com.stuffedgiraffe.agilifier.model.UserStory;
 import com.stuffedgiraffe.agilifier.model.UserStorySuite;
@@ -18,18 +19,24 @@ public class HtmlPublisher implements Publisher {
 
     public void generateUserStorySuiteSummary(UserStorySuite userStorySuite, FileContext fileContext) {
         File file = fileContext.getResultFile("summary" + userStorySuite.getName() + ".html");
-        Map context = MapBuilder.make("suite", userStorySuite);
+        Map<String, Object> context = MapBuilder.make("userStory", userStorySuite);
         fileGenerator.generateFile("UserStorySuiteSummary.vm", context, file);
+    }
+
+    public void generateSummary(AcceptanceTestContainer userStorySuite, FileContext fileContext) {
+        File file = fileContext.getResultFile("summary.html");
+        Map<String, Object> context = MapBuilder.make("userStory", userStorySuite);
+        fileGenerator.generateFile("UserStorySummary.vm", context, file);
     }
 
     public void generateUserStorySummary(UserStory userStory, FileContext fileContext) {
         File file = fileContext.getResultFile(userStory.getName() + File.separatorChar + "summary.html");
-        Map context = MapBuilder.make("userStory", userStory);
+        Map<String, Object> context = MapBuilder.make("userStory", userStory);
         fileGenerator.generateFile("UserStorySummary.vm", context, file);
     }
 
     public void generateModuleSummary(Module module) {
-        Map context = MapBuilder.make("module", module);
+        Map<String, Object> context = MapBuilder.make("module", module);
         File outputFile = module.getFileContext().getResultFile("index.html");
         fileGenerator.generateFile("ModuleSummary.vm", context, outputFile);
     }

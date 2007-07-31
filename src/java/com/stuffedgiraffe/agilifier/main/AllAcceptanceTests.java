@@ -19,7 +19,8 @@ public class AllAcceptanceTests {
             }
             String moduleName = Agilifier.getModuleName();
             FileContext fileContext = FileContext.createFromPropertiesFile();
-            return GenerateUserStorySite.suite(moduleName, fileContext, new DeafTestListener());
+            TestSuite testSuite = GenerateUserStorySite.suite(moduleName, fileContext, new DeafTestListener());
+            return testSuite;
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
