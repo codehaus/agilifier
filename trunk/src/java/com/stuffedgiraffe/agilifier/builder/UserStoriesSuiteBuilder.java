@@ -1,18 +1,14 @@
 package com.stuffedgiraffe.agilifier.builder;
 
 import com.stuffedgiraffe.agilifier.main.FileContext;
-import com.stuffedgiraffe.agilifier.model.AcceptanceTest;
-import com.stuffedgiraffe.agilifier.model.Module;
-import com.stuffedgiraffe.agilifier.model.UserStory;
-import com.stuffedgiraffe.agilifier.model.UserStorySuite;
+import com.stuffedgiraffe.agilifier.model.*;
 import com.stuffedgiraffe.agilifier.runner.ExactorRunner;
 import com.stuffedgiraffe.agilifier.runner.FitRunner;
 import com.stuffedgiraffe.agilifier.runner.Runner;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 
 import java.io.*;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class UserStoriesSuiteBuilder {
@@ -38,8 +34,8 @@ public class UserStoriesSuiteBuilder {
         String storyName = reader.readLine();
         while (storyName != null) {
             storyName = storyName.trim();
-            UserStory userStory = buildUserStory(storyName, fileContext);
-            userStorySuite.addStory(userStory);
+            UserStory userStory = buildUserStory(storyName, userStorySuite, fileContext);
+            userStorySuite.addChild(userStory);
             storyName = reader.readLine();
         }
         return userStorySuite;
@@ -50,27 +46,28 @@ public class UserStoriesSuiteBuilder {
         File[] storyDirectories = fileContext.getTestRootDir().listFiles(DIRECTORY_FILE_FILTER);
         for (File storyDirectory : storyDirectories) {
             String storyName = storyDirectory.getName();
-            UserStory userStory = buildUserStory(storyName, fileContext);
-            userStorySuite.addStory(userStory);
+            UserStory userStory = buildUserStory(storyName, userStorySuite, fileContext);
+            userStorySuite.addChild(userStory);
         }
         return userStorySuite;
     }
 
     public UserStorySuite buildOtherUserStoriesSuite(UserStorySuite[] userStorySuites, FileContext fileContext, Module module) {
         UserStorySuite allStoriesSuite = buildAllUserStoriesSuite(fileContext, module);
-        Set<UserStory> allStories = new HashSet<UserStory>(allStoriesSuite.getStories());
+        Set<AcceptanceTestOrAcceptanceTestContainer> allStories = new HashSet<AcceptanceTestOrAcceptanceTestContainer>(allStoriesSuite.getChildren());
         for (UserStorySuite userStorySuite : userStorySuites) {
-            allStories.removeAll(userStorySuite.getStories());
+            allStories.removeAll(userStorySuite.getChildren());
         }
         UserStorySuite otherStoriesSuite = new UserStorySuite("Future User Stories", module);
-        for (UserStory userStory : allStories) {
-            otherStoriesSuite.addStory(userStory);
+        for (AcceptanceTestOrAcceptanceTestContainer userStory : allStories) {
+            otherStoriesSuite.addChild(userStory);
         }
         return otherStoriesSuite;
     }
 
-    public UserStory buildUserStory(String storyName, FileContext fileContext) {
+    public UserStory buildUserStory(String storyName, UserStorySuite userStorySuite, FileContext fileContext) {
         UserStory userStory = new UserStory(storyName);
+        userStory.setParent(userStorySuite);
         loadStoryText(userStory, fileContext);
         File storyDir = new File(fileContext.getTestRootDir() + File.separator + storyName);
         for (Runner runner : runners) {
@@ -87,21 +84,21 @@ public class UserStoriesSuiteBuilder {
     }
 
     private static void loadStoryText(UserStory userStory, FileContext fileContext) {
-        List<String> lines = new LinkedList<String>();
+        StringBuilder text = new StringBuilder();
         File storyFile = fileContext.getTestFile(userStory.getName() + File.separator + "story.txt");
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(storyFile));
             String currentLine = reader.readLine();
             while (currentLine != null) {
-                lines.add(currentLine);
+                text.append(currentLine).append("\r\n");
                 currentLine = reader.readLine();
             }
         } catch (FileNotFoundException e) {
             // If the file is not found then just return an empty list
-            lines.add("<< No Story Details >>");
+            text.append("<< No Story Details >>");
         } catch (IOException e) {
-            lines.add(e.getMessage());
+            text.append(Agilifier.getStackTrace(e));
         } finally {
             if (reader != null) {
                 try {
@@ -111,7 +108,7 @@ public class UserStoriesSuiteBuilder {
                 }
             }
         }
-        userStory.setStoryText(lines);
+        userStory.setText(text.toString());
     }
 
     public static Module buildModule(FileContext fileContext, String name) throws IOException {

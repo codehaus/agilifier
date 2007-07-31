@@ -30,7 +30,7 @@ public class GenerateUserStorySite {
             Publisher publisher = new HtmlPublisher(new FreemarkerFileGenerator());
             JUnitSuiteBuilder testSuiteBuilder = new JUnitSuiteBuilder(publisher, testListener);
             Module module = UserStoriesSuiteBuilder.buildModule(fileContext, moduleName);
-            return testSuiteBuilder.buildJUnitSuite(module);
+            return testSuiteBuilder.buildJUnitSuite(module, module.getFileContext());
         } catch (IOException e) {
             e.printStackTrace();
             throw e;

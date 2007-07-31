@@ -22,6 +22,6 @@ public class MyCurrentWorkTests {
         Publisher publisher = new HtmlPublisher(new FreemarkerFileGenerator());
         DeafTestListener listener = new DeafTestListener();
         JUnitSuiteBuilder testSuiteBuilder = new JUnitSuiteBuilder(publisher, listener);
-        return testSuiteBuilder.buildJUnitSuite(module);
+        return testSuiteBuilder.buildJUnitSuite(module, module.getFileContext());
     }
 }

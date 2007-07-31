@@ -5,11 +5,10 @@ import com.exoftware.exactor.parser.ScriptParser;
 import com.stuffedgiraffe.agilifier.model.AcceptanceTest;
 import com.stuffedgiraffe.agilifier.publisher.FileGenerator;
 import com.stuffedgiraffe.agilifier.publisher.FreemarkerFileGenerator;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 public class ExactorRunnerBackEnd {
@@ -118,9 +117,7 @@ public class ExactorRunnerBackEnd {
         public CommandResult(Command command, Throwable exception) {
             this.command = command;
             if (exception != null) {
-                StringWriter stringWriter = new StringWriter();
-                exception.printStackTrace(new PrintWriter(stringWriter));
-                this.stackTrace = stringWriter.toString();
+                this.stackTrace = Agilifier.getStackTrace(exception);
             }
             executed++;
             if (exception != null) {

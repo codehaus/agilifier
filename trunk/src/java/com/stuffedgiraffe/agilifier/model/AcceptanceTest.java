@@ -5,7 +5,7 @@ import com.stuffedgiraffe.agilifier.util.CamelUtils;
 
 import java.io.File;
 
-public class AcceptanceTest {
+public class AcceptanceTest implements AcceptanceTestOrAcceptanceTestContainer {
     private String name;
     private boolean passed;
     private File testFile;
@@ -27,6 +27,10 @@ public class AcceptanceTest {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isTest() {
+        return true;
     }
 
     public String getDescription() {
