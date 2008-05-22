@@ -5,10 +5,11 @@ import com.exoftware.exactor.parser.ScriptParser;
 import com.stuffedgiraffe.agilifier.model.AcceptanceTest;
 import com.stuffedgiraffe.agilifier.publisher.FileGenerator;
 import com.stuffedgiraffe.agilifier.publisher.FreemarkerFileGenerator;
-import com.stuffedgiraffe.agilifier.util.Agilifier;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 public class ExactorRunnerBackEnd {
@@ -44,7 +45,7 @@ public class ExactorRunnerBackEnd {
     }
 
 
-    private List<CommandResult> results;
+    private List results;
     private Throwable throwable;
 
     private void executeTestCase(File testFile, File resultsFile) throws Throwable {
@@ -67,13 +68,14 @@ public class ExactorRunnerBackEnd {
             }
 
             public void scriptStarted(Script s) {
-                results = new LinkedList<CommandResult>();
+                results = new LinkedList();
                 executed = 0;
                 failed = 0;
             }
 
             public void scriptEnded(Script s) {
-                for (CommandResult commandResult : results) {
+                for (int i = 0; i < results.size(); i++) {
+                    CommandResult commandResult = (CommandResult) results.get(i);
                     int length = commandResult.getCommand().getParameters().length;
                     if (length > maxParameters) {
                         maxParameters = length;
@@ -81,7 +83,7 @@ public class ExactorRunnerBackEnd {
 
                 }
 
-                Map<String, Object> data = new HashMap<String, Object>();
+                Map data = new HashMap();
                 data.put("results", results);
                 data.put("acceptanceTestName", test.getDescription());
                 data.put("executed", String.valueOf(executed));
@@ -117,7 +119,9 @@ public class ExactorRunnerBackEnd {
         public CommandResult(Command command, Throwable exception) {
             this.command = command;
             if (exception != null) {
-                this.stackTrace = Agilifier.getStackTrace(exception);
+                StringWriter stringWriter = new StringWriter();
+                exception.printStackTrace(new PrintWriter(stringWriter));
+                this.stackTrace = stringWriter.toString();
             }
             executed++;
             if (exception != null) {

@@ -2,7 +2,7 @@ package com.stuffedgiraffe.agilifier.util;
 
 import junit.framework.TestCase;
 
-public class CamelUtilsTest extends TestCase {
+public class AgilifierTest extends TestCase {
     public void testUncamelWorksForSimpleCase() throws Exception {
         assertUncamel("ThisIsATest", "This Is A Test");
     }
@@ -16,16 +16,9 @@ public class CamelUtilsTest extends TestCase {
         assertUncamel("ThisIsAnIMSTest", "This Is An IMS Test");
     }
 
-    public void testStringThatEndsWithAcronymIsSeparatedOut() throws Exception {
-        assertUncamel("ILoveMyPMM", "I Love My PMM");
-    }
-
-    public void testStringsStartingWithNumbersAreUnCamelledCorrectly() throws Exception {
-        assertUncamel("666IsTheNumberOfTheBeast", "666 Is The Number Of The Beast");
-    }
-
     private void assertUncamel(String camel, String expectedUncamel) {
-        String result = CamelUtils.uncamel(camel);
-        assertEquals(expectedUncamel, result);
+        String result = Agilifier.uncamel(camel);
+        assertEquals(expectedUncamel,result);
     }
+
 }

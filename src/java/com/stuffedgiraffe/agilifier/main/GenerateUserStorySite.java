@@ -30,7 +30,7 @@ public class GenerateUserStorySite {
             Publisher publisher = new HtmlPublisher(new FreemarkerFileGenerator());
             JUnitSuiteBuilder testSuiteBuilder = new JUnitSuiteBuilder(publisher, testListener);
             Module module = UserStoriesSuiteBuilder.buildModule(fileContext, moduleName);
-            return testSuiteBuilder.buildJUnitSuite(module, module.getFileContext());
+            return testSuiteBuilder.buildJUnitSuite(module);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -44,10 +44,12 @@ public class GenerateUserStorySite {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(fileContext.getTestRootDir());
         String[] excludedFiles = new String[]{"**/story.txt", "**/*.suite", "**/*.html", "**/*.act", "**/.svn/**/*", "**/CVS/**/*"};
+//        scanner.setIncludes(new String[]{"**/*"});
         scanner.setExcludes(excludedFiles);
         scanner.scan();
         String[] files = scanner.getIncludedFiles();
-        for (String filename : files) {
+        for (int i = 0; i < files.length; i++) {
+            String filename = files[i];
             copyFileToResultsArea(fileContext, filename);
         }
     }

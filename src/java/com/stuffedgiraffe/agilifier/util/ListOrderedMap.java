@@ -2,9 +2,9 @@ package com.stuffedgiraffe.agilifier.util;
 
 import java.util.*;
 
-public class ListOrderedMap<K, V> implements Map<K, V> {
-    private Map<K, V> map = new HashMap<K, V>();
-    private List<K> list = new ArrayList<K>();
+public class ListOrderedMap implements Map {
+    private Map map = new HashMap();
+    private List list = new ArrayList();
 
     public int size() {
         return list.size();
@@ -27,78 +27,71 @@ public class ListOrderedMap<K, V> implements Map<K, V> {
         return map.containsValue(value);
     }
 
-    public Collection<V> values() {
-        List<V> values = new ArrayList<V>(list.size());
-        for (K key : list) {
+    public Collection values() {
+        List values = new ArrayList(list.size());
+        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+            Object key = iterator.next();
             values.add(map.get(key));
         }
         return values;
     }
 
-    public void putAll(Map<? extends K, ? extends V> t) {
+    public void putAll(Map t) {
         map.putAll(t);
         list.addAll(t.keySet());
     }
 
-    public Set<Entry<K, V>> entrySet() {
-        final List<Map.Entry<K, V>> entryList = new ArrayList<Map.Entry<K, V>>(list.size());
-        for (final K key : list) {
-            final V value = map.get(key);
-            Entry<K, V> entry = new Entry<K, V>() {
-                public K getKey() {
+    public Set entrySet() {
+        final List entryList = new ArrayList(list.size());
+        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+            final Object key = iterator.next();
+            final Object value = map.get(key);
+            Map.Entry entry = new Entry() {
+                public Object getKey() {
                     return key;
                 }
 
-                public V getValue() {
+                public Object getValue() {
                     return value;
                 }
 
-                public V setValue(Object value) {
+                public Object setValue(Object value) {
                     throw new UnsupportedOperationException();
                 }
             };
             entryList.add(entry);
         }
-        return new ListOrderedSet<Entry<K, V>>(entryList).wrapAsUnmodifiable();
+        return makeOrderedSet(entryList);
     }
 
-    public Set<K> keySet() {
-        return new ListOrderedSet<K>(list).wrapAsUnmodifiable();
+    private Set makeOrderedSet(final List entryList) {
+        AbstractSet entrySet = new AbstractSet() {
+            public int size() {
+                return entryList.size();
+            }
+
+            public Iterator iterator() {
+                return entryList.iterator();
+            }
+        };
+        return Collections.unmodifiableSet(entrySet);
     }
 
-    public V get(Object key) {
+    public Set keySet() {
+        return makeOrderedSet(list);
+    }
+
+    public Object get(Object key) {
         return map.get(key);
     }
 
-    public V remove(Object key) {
+    public Object remove(Object key) {
         list.remove(key);
         return map.remove(key);
     }
 
-    public V put(K key, V value) {
+    public Object put(Object key, Object value) {
         list.add(key);
         return map.put(key, value);
-    }
-
-
-    private static class ListOrderedSet<T> extends AbstractSet<T> {
-        private final List<T> entryList;
-
-        public ListOrderedSet(List<T> entryList) {
-            this.entryList = entryList;
-        }
-
-        public Iterator<T> iterator() {
-            return entryList.iterator();
-        }
-
-        public int size() {
-            return entryList.size();
-        }
-
-        public Set<T> wrapAsUnmodifiable() {
-            return Collections.unmodifiableSet(this);
-        }
-
     }
 }

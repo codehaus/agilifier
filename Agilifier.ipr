@@ -320,7 +320,17 @@
       </value>
     </option>
   </component>
-  <component name="libraryTable" />
+  <component name="libraryTable">
+    <library name="Fit">
+      <CLASSES>
+        <root url="jar://C:/java/fit/fit.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/java/fit/Source" />
+      </SOURCES>
+    </library>
+  </component>
   <component name="uidesigner-configuration">
     <option name="INSTRUMENT_CLASSES" value="true" />
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
