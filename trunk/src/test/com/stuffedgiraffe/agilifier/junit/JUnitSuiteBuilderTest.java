@@ -45,13 +45,13 @@ public class JUnitSuiteBuilderTest extends MockObjectTestCase {
         jUnitSuiteBuilder = new JUnitSuiteBuilder((Publisher) publisherMock.proxy(),
                 (TestListener) testListenerMock.proxy());
         module.addUserStorySuite(suite);
-        suite.addChild(story);
+        suite.addStory(story);
         story.addTest(acceptanceTest);
     }
 
 
     public void testTestSuiteStructureMimicsModuleStructure() throws Exception {
-        TestSuite moduleSuite = jUnitSuiteBuilder.buildJUnitSuite(module, module.getFileContext());
+        TestSuite moduleSuite = jUnitSuiteBuilder.buildJUnitSuite(module);
 
         assertEquals("MyModule", moduleSuite.getName());
         TestSuite storiesSuite = (TestSuite) moduleSuite.tests().nextElement();
@@ -73,7 +73,7 @@ public class JUnitSuiteBuilderTest extends MockObjectTestCase {
 
         runnerMock.expects(once()).method("runTest").with(eq(new AcceptanceTest(testFile, resultFile, runner)));
 
-        TestSuite moduleSuite = jUnitSuiteBuilder.buildJUnitSuite(module, module.getFileContext());
+        TestSuite moduleSuite = jUnitSuiteBuilder.buildJUnitSuite(module);
         TestResult testResult = new TestResult();
         moduleSuite.run(testResult);
 

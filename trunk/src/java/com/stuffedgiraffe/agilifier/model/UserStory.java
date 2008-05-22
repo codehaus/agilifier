@@ -1,79 +1,44 @@
 package com.stuffedgiraffe.agilifier.model;
 
-import com.stuffedgiraffe.agilifier.util.CamelUtils;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class UserStory implements AcceptanceTestContainer {
+public class UserStory {
+    private Map tests = new HashMap();
     private String name;
-    private Map<File, AcceptanceTest> tests = new HashMap<File, AcceptanceTest>();
-    private String text = "";
-    private AcceptanceTestContainer parent;
+    private List storyText;
 
     public UserStory(String userStory) {
         this.name = userStory;
-    }
-
-    public void setParent(AcceptanceTestContainer parent) {
-        this.parent = parent;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isTest() {
-        return false;
-    }
-
     public String getDescription() {
-        return CamelUtils.uncamel(name);
+        return Agilifier.uncamel(name);
     }
 
-
-    public String getText() {
-        return text;
+    public List getStoryText() {
+        return storyText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setStoryText(List storyText) {
+        this.storyText = storyText;
     }
 
     public void addTest(AcceptanceTest test) {
         tests.put(test.getTestFile(), test);
     }
 
-    public void addChild(AcceptanceTestOrAcceptanceTestContainer test) {
-        AcceptanceTest acceptanceTest = (AcceptanceTest) test;
-        tests.put(acceptanceTest.getTestFile(), acceptanceTest);
-    }
-
-    public AcceptanceTestContainer getParent() {
-        return parent;
-    }
-
-    public Collection<AcceptanceTestOrAcceptanceTestContainer> getChildren() {
-        ArrayList<AcceptanceTestOrAcceptanceTestContainer> result = new ArrayList<AcceptanceTestOrAcceptanceTestContainer>(tests.values().size());
-        for (AcceptanceTest acceptanceTest : tests.values()) {
-            result.add(acceptanceTest);
-        }
-        return result;
+    public Collection getAllTests() {
+        return tests.values();
     }
 
     public int getPassedPercent() {
         return percentWithResult(true);
-    }
-
-    public String getPathToRoot() {
-        return getParent().getPathToRoot() + "/..";
-    }
-
-    public String getPath() {
-        return getParent().getPath() + "/" + getName();
     }
 
     public int getFailedPercent() {
@@ -99,7 +64,8 @@ public class UserStory implements AcceptanceTestContainer {
 
     private int countTestsWithResult(boolean passed) {
         int count = 0;
-        for (AcceptanceTest result : tests.values()) {
+        for (Iterator iterator = tests.values().iterator(); iterator.hasNext();) {
+            AcceptanceTest result = (AcceptanceTest) iterator.next();
             if (result.getPassed() == passed) {
                 count++;
             }
@@ -107,7 +73,6 @@ public class UserStory implements AcceptanceTestContainer {
         return count;
     }
 
-    @SuppressWarnings({"RedundantIfStatement"})
     public boolean equals(Object o) {
         if (this == o) {
             return true;

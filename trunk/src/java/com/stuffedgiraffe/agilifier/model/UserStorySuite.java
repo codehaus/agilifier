@@ -1,23 +1,23 @@
 package com.stuffedgiraffe.agilifier.model;
 
-import com.stuffedgiraffe.agilifier.util.CamelUtils;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 import com.stuffedgiraffe.agilifier.util.ListOrderedMap;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
-public class UserStorySuite implements AcceptanceTestContainer {
+public class UserStorySuite {
     private String name;
-    private Map<String, AcceptanceTestOrAcceptanceTestContainer> userStories = new ListOrderedMap<String, AcceptanceTestOrAcceptanceTestContainer>();
-    private AcceptanceTestContainer module;
-    private String text = "";
+    private Module module;
+    private Map userStories = new ListOrderedMap();
 
-    public UserStorySuite(String suiteName, AcceptanceTestContainer module) {
+    public UserStorySuite(String suiteName, Module module) {
         this.name = suiteName;
         this.module = module;
     }
 
-    public AcceptanceTestContainer getParent() {
+    public Module getModule() {
         return module;
     }
 
@@ -25,26 +25,22 @@ public class UserStorySuite implements AcceptanceTestContainer {
         return name;
     }
 
-    public boolean isTest() {
-        return false;
-    }
-
     public String getDescription() {
-        return CamelUtils.uncamel(name);
+        return Agilifier.uncamel(name);
     }
 
-    public void addChild(AcceptanceTestOrAcceptanceTestContainer userStory) {
+    public void addStory(UserStory userStory) {
         userStories.put(userStory.getName(), userStory);
     }
 
-    public Collection<AcceptanceTestOrAcceptanceTestContainer> getChildren() {
+    public Collection getStories() {
         return userStories.values();
     }
 
     public int getPassedCount() {
         int passed = 0;
-        for (AcceptanceTestOrAcceptanceTestContainer container : getChildren()) {
-            AcceptanceTestContainer userStorySummary = (AcceptanceTestContainer) container;
+        for (Iterator iterator = getStories().iterator(); iterator.hasNext();) {
+            UserStory userStorySummary = (UserStory) iterator.next();
             passed += userStorySummary.getPassedCount();
         }
         return passed;
@@ -52,8 +48,8 @@ public class UserStorySuite implements AcceptanceTestContainer {
 
     public int getFailedCount() {
         int failed = 0;
-        for (AcceptanceTestOrAcceptanceTestContainer container : getChildren()) {
-            AcceptanceTestContainer userStorySummary = (AcceptanceTestContainer) container;
+        for (Iterator iterator = getStories().iterator(); iterator.hasNext();) {
+            UserStory userStorySummary = (UserStory) iterator.next();
             failed += userStorySummary.getFailedCount();
         }
         return failed;
@@ -77,21 +73,5 @@ public class UserStorySuite implements AcceptanceTestContainer {
         return 100 * passed / (passed + failed);
     }
 
-    public String getPath() {
-        String path = getParent().getPath() + "/" + getName();
-        return path;
-    }
 
-    public String getPathToRoot() {
-        String path = getParent().getPathToRoot() + "/..";
-        return path;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }

@@ -4,5 +4,5 @@ import java.io.File;
 import java.util.Map;
 
 public interface FileGenerator {
-    void generateFile(String templateName, Map<String, Object> context, File outputFile);
+    void generateFile(String templateName, Map context, File outputFile);
 }

@@ -1,39 +1,48 @@
 package com.stuffedgiraffe.agilifier;
 
-import com.stuffedgiraffe.agilifier.util.CamelUtils;
+import com.stuffedgiraffe.agilifier.builder.UserStoriesSuiteBuilder;
+import com.stuffedgiraffe.agilifier.main.FileContext;
+import com.stuffedgiraffe.agilifier.model.AcceptanceTest;
+import com.stuffedgiraffe.agilifier.model.Module;
+import com.stuffedgiraffe.agilifier.model.UserStory;
+import com.stuffedgiraffe.agilifier.model.UserStorySuite;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AcceptanceTestFileStructureTest extends TestCase {
-    private List<File> failures = new ArrayList<File>();
+    private List failures = new LinkedList();
 
-    // TODO - Fix this
-//    public void testTestNameAppearsInTestFileCorrectly() throws Exception {
-//        FileContext fileContext = FileContext.createFromPropertiesFile();
-//        UserStoriesSuiteBuilder factory = new UserStoriesSuiteBuilder();
-//        Module module = new Module("MyModule", fileContext);
-//        UserStorySuite userStorySuite = factory.buildAllUserStoriesSuite(fileContext, module);
-//        for (AcceptanceTestOrAcceptanceTestContainer userStory : userStorySuite.getChildren()) {
-//            for (AcceptanceTest acceptanceTest : userStory.getAll()) {
-//                File testFile = acceptanceTest.getTestFile();
-//                checkHeadingInFileIsCorrect(testFile);
-//            }
-//        }
-//        if (!failures.isEmpty()) {
-//            failThisTest();
-//        }
-//    }
+    public void testTestNameAppearsInTestFileCorrectly() throws Exception {
+        FileContext fileContext = FileContext.createFromPropertiesFile();
+        UserStoriesSuiteBuilder factory = new UserStoriesSuiteBuilder();
+        Module module = new Module("MyModule", fileContext);
+        UserStorySuite userStorySuite = factory.buildAllUserStoriesSuite(fileContext, module);
+        for (Iterator i1 = userStorySuite.getStories().iterator(); i1.hasNext();) {
+            UserStory userStory = (UserStory) i1.next();
+            for (Iterator i2 = userStory.getAllTests().iterator(); i2.hasNext();) {
+                AcceptanceTest test = (AcceptanceTest) i2.next();
+                File testFile = test.getTestFile();
+                checkHeadingInFileIsCorrect(testFile);
+            }
+        }
+        if (!failures.isEmpty()) {
+            failThisTest();
+        }
+    }
 
     private void failThisTest() {
         StringBuffer stringBuffer = new StringBuffer("Could not find name in test files (" + failures.size() + "): \n");
-        for (File failure : failures) {
-            stringBuffer.append("    - ").append(failure).append("\n");
+        for (int i = 0; i < failures.size(); i++) {
+            File file = (File) failures.get(i);
+            stringBuffer.append("    - ").append(file).append("\n");
         }
         fail(stringBuffer.toString());
     }
@@ -49,7 +58,7 @@ public class AcceptanceTestFileStructureTest extends TestCase {
             return;
         }
         String testName = filename.substring(0, filename.indexOf(".html"));
-        testName = CamelUtils.uncamel(testName);
+        testName = Agilifier.uncamel(testName);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
         boolean found = false;

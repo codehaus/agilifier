@@ -26,7 +26,7 @@ public class FreemarkerFileGenerator implements FileGenerator {
         freemarkerConfig.setObjectWrapper(new DefaultObjectWrapper());
     }
 
-    public void generateFile(String templateFilename, Map<String, Object> context, File outputFile) {
+    public void generateFile(String templateFilename, Map context, File outputFile) {
         templateFilename = templateFilename.replaceAll(".vm", ".ftl");
         PrintWriter printWriter = null;
         outputFile.getParentFile().mkdirs();

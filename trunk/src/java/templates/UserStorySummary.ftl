@@ -1,14 +1,16 @@
 <html>
 <head>
-   <link rel="stylesheet" href="${userStory.pathToRoot}/overview.css">
+   <link rel="stylesheet" href="../overview.css">
 </head>
 <body>
 <div class="storyCard">
     <div class="storyTitle">${userStory.description}</div>
     <div class="storyContent">
-        ${userStory.text}<br>
+    <#foreach line in userStory.storyText>
+        ${line}<br>
+    </#foreach>
     </div>
-    <#if userStory.children?size == 0 >
+    <#if userStory.allTests?size == 0 >
         <div class="noData">
         There are currently no tests for this story.
         </div>
@@ -17,23 +19,17 @@
         <table class="results" border='0'>
             <tr class="heading">
                 <td>
-                    <div class="fat">User Stories / Acceptance Tests</div>
+                    <div class="fat">Acceptance Tests</div>
                 </td>
             </tr>
-        <#foreach test in userStory.children>
-            <#if test.isTest()>
-                <#if test.passed>
-                <tr class="passed">
-                <#else>
-                <tr class="failed">
-                </#if>
-                    <td><div class="fat"><a href='./${test.name}.html'>${test.description}</a></div></td>
-                 </tr>
+        <#foreach test in userStory.allTests>
+            <#if test.passed>
+            <tr class="passed">
             <#else>
-                <tr class="passed">
-                    <td><div class="fat"><a href='./${test.name}/summary.html'>${test.description} </a></div></td>
-                 </tr>
+            <tr class="failed">
             </#if>
+                <td><div class="fat"><a href='${test.name}.html'>${test.description}</a></div></td>
+             </tr>
         </#foreach>
         </table>
     </#if>

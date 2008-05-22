@@ -14,11 +14,6 @@ public class FileContext {
         this.resultsRootDir = new File(resultsRootDir);
     }
 
-    public FileContext(FileContext fileContext, String resultsOffset) {
-        this.testRootDir = fileContext.testRootDir;
-        this.resultsRootDir = new File(fileContext.resultsRootDir.getPath() + "/" + resultsOffset);
-    }
-
     public File getTestRootDir() {
         return testRootDir;
     }

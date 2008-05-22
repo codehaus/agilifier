@@ -1,11 +1,11 @@
 package com.stuffedgiraffe.agilifier.model;
 
 import com.stuffedgiraffe.agilifier.runner.Runner;
-import com.stuffedgiraffe.agilifier.util.CamelUtils;
+import com.stuffedgiraffe.agilifier.util.Agilifier;
 
 import java.io.File;
 
-public class AcceptanceTest implements AcceptanceTestOrAcceptanceTestContainer {
+public class AcceptanceTest {
     private String name;
     private boolean passed;
     private File testFile;
@@ -29,12 +29,8 @@ public class AcceptanceTest implements AcceptanceTestOrAcceptanceTestContainer {
         return name;
     }
 
-    public boolean isTest() {
-        return true;
-    }
-
     public String getDescription() {
-        return CamelUtils.uncamel(name);
+        return Agilifier.uncamel(name);
     }
 
     public boolean getPassed() {
@@ -49,29 +45,16 @@ public class AcceptanceTest implements AcceptanceTestOrAcceptanceTestContainer {
         return resultFile;
     }
 
-    @SuppressWarnings({"RedundantIfStatement"})
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AcceptanceTest)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof AcceptanceTest)) return false;
 
         final AcceptanceTest acceptanceTest = (AcceptanceTest) o;
 
-        if (passed != acceptanceTest.passed) {
-            return false;
-        }
-        if (name != null ? !name.equals(acceptanceTest.name) : acceptanceTest.name != null) {
-            return false;
-        }
-        if (resultFile != null ? !resultFile.equals(acceptanceTest.resultFile) : acceptanceTest.resultFile != null) {
-            return false;
-        }
-        if (testFile != null ? !testFile.equals(acceptanceTest.testFile) : acceptanceTest.testFile != null) {
-            return false;
-        }
+        if (passed != acceptanceTest.passed) return false;
+        if (name != null ? !name.equals(acceptanceTest.name) : acceptanceTest.name != null) return false;
+        if (resultFile != null ? !resultFile.equals(acceptanceTest.resultFile) : acceptanceTest.resultFile != null) return false;
+        if (testFile != null ? !testFile.equals(acceptanceTest.testFile) : acceptanceTest.testFile != null) return false;
 
         return true;
     }

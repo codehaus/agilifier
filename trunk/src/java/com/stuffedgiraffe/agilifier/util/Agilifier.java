@@ -2,11 +2,53 @@ package com.stuffedgiraffe.agilifier.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Properties;
 
 public class Agilifier {
+
+    public static String uncamel(String name) {
+        StringBuffer b = new StringBuffer();
+        char[] chars = name.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (Character.isUpperCase(c) && (nextCharacterIsNotUpperCase(chars, i) || previousCharacterIsNotUpperCase(chars, i)))
+            {
+                b.append(" ");
+            }
+            if (Character.isDigit(c) && previousCharacterIsNotDigit(chars, i)) {
+                b.append(" ");
+            }
+            b.append(c);
+        }
+        String result = b.toString();
+        return result.trim();
+    }
+
+    private static boolean previousCharacterIsNotDigit(char[] chars, int i) {
+        i--;
+        if (i >= chars.length) {
+            return true;
+        }
+        return !Character.isDigit(chars[i]);
+    }
+
+    private static boolean nextCharacterIsNotUpperCase(char[] chars, int i) {
+        i++;
+        if (i >= chars.length) {
+            return true;
+        }
+        return !Character.isUpperCase(chars[i]);
+    }
+
+    private static boolean previousCharacterIsNotUpperCase(char[] chars, int i) {
+        i--;
+        if (i < 0) {
+            return true;
+        }
+        return !Character.isUpperCase(chars[i]);
+    }
+
+
     private static boolean treatExistingResultFileAsSuccess = false;
 
     public static boolean treatExistingResultFileAsSuccess() {
@@ -38,11 +80,4 @@ public class Agilifier {
     public static String getModuleName() throws IOException {
         return getProperty("agilifier.projectName", "Project");
     }
-
-    public static String getStackTrace(Throwable exception) {
-        StringWriter stringWriter = new StringWriter();
-        exception.printStackTrace(new PrintWriter(stringWriter));
-        return stringWriter.toString();
-    }
-
 }
